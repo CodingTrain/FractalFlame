@@ -14,6 +14,7 @@ void setup() {
   variations.add(new Sinusoidal().setColor(0, 1, 0));
   variations.add(new Swirl().setColor(0, 0, 1));
   variations.add(new Spherical().setColor(1, 0, 1));
+  variations.add(new HorseShoe().setColor(1, 1, 0.5));
   current = PVector.random2D().mult(random(1));
   for (int i = 0; i < width; i++) {
     for (int j = 0; j < height; j++) {

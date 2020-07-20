@@ -1,4 +1,18 @@
 
+class HorseShoe extends Variation {    
+    HorseShoe() {
+    super();
+  }
+
+  PVector f(PVector v) {
+    float r = v.magSq();
+    float x = (v.x-v.y) * (v.x+v.y);
+    float y = 2 * v.x * v.y;
+    PVector newV = new PVector(x,y);
+    return newV;    
+  }
+}
+
 class Spherical extends Variation {
   Spherical() {
     super();
@@ -49,15 +63,15 @@ class Linear extends Variation {
 class Variation {
   float[] preTransform = new float[6];
   float[] postTransform = new float[6];
-  float r,g,b;
-  
+  float r, g, b;
+
   Variation setColor(float r, float g, float b) {
     this.r = r;
     this.b = b;
     this.g = g;    
     return this;
   }
-  
+
 
   Variation() {
     for (int i = 0; i < 6; i++) {
