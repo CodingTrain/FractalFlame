@@ -74,10 +74,12 @@ class Variation {
 
 
   Variation() {
-    for (int i = 0; i < 6; i++) {
-      this.preTransform[i] = random(-1, 1);
-      this.postTransform[i] = random(-1, 1);
-    }
+    this.preTransform =  new float[] {1,0,0,0,1,0};
+    this.postTransform = new float[] {1,0,0,0,1,0};
+    //for (int i = 0; i < 6; i++) {
+    //  this.preTransform[i] = random(-1, 1);
+    //  this.postTransform[i] = random(-1, 1);
+    //}
   }
 
   PVector affine(PVector v, float[] coeff) {

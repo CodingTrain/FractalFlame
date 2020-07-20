@@ -5,16 +5,16 @@ ArrayList<Variation> variations = new ArrayList<Variation>();
 
 Pixel[][] pixies;
 
-int total = 50000000;
-int perFrame = 2000000;
+int total = 10000000;
+int perFrame = 1;
 int count = 0;
 
 void setup() {
   size(800, 800);
-  randomSeed(403);
+  //randomSeed(403);
   pixies = new Pixel[width][height];
 
-  variations.add(new Linear(0.5).setColor(1, 1, 0));
+  variations.add(new Linear(1).setColor(1, 1, 0));
   variations.add(new Sinusoidal().setColor(1, 0, 1));
   variations.add(new Swirl().setColor(0, 1, 1));
   variations.add(new Spherical().setColor(.1, 1, 1));
@@ -36,6 +36,7 @@ void draw() {
     int index = int(random(variations.size()));
     Variation variation = variations.get(index);
     current = variation.flame(current);
+    println(current.x, current.y);
 
     // A final transformation to fit on window?
     float x = current.x * width / 2 * 0.2;
@@ -55,7 +56,7 @@ void draw() {
   }
   
   count += perFrame;
-  println(count);
+  //println(count);
   
   float percent = float(count) / total;
   fill(255);
