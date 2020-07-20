@@ -5,21 +5,23 @@ ArrayList<Variation> variations = new ArrayList<Variation>();
 
 Pixel[][] pixies;
 
-int total = 10000000;
-int perFrame = 1;
+int total = 50000000;
+int perFrame = 500000;
 int count = 0;
+
+
 
 void setup() {
   size(800, 800);
   //randomSeed(403);
   pixies = new Pixel[width][height];
-
-  variations.add(new Linear(1).setColor(1, 1, 0));
-  variations.add(new Sinusoidal().setColor(1, 0, 1));
-  variations.add(new Swirl().setColor(0, 1, 1));
-  variations.add(new Spherical().setColor(.1, 1, 1));
-  variations.add(new HorseShoe().setColor(1, .5, 1));
-  current = PVector.random2D().mult(random(1));
+  variations.add(new Linear(1));
+  variations.add(new Sinusoidal());
+  variations.add(new Swirl());
+  variations.add(new Spherical());
+  variations.add(new HorseShoe());
+  //variations.add(new Hankerchief().setColor(0.5, 0.7, 1));
+  current = PVector.random2D();//.mult(random(1));
   for (int i = 0; i < width; i++) {
     for (int j = 0; j < height; j++) {
       pixies[i][j] = new Pixel();
@@ -36,11 +38,14 @@ void draw() {
     int index = int(random(variations.size()));
     Variation variation = variations.get(index);
     current = variation.flame(current);
-    println(current.x, current.y);
+    if (Float.isNaN(current.x) || Float.isNaN(current.y)) {
+      println(variation.name);
+      break;
+    }
 
     // A final transformation to fit on window?
-    float x = current.x * width / 2 * 0.2;
-    float y = current.y * height / 2 * 0.2;
+    float x = current.x * width / 2 * 0.5;
+    float y = current.y * height / 2 * 0.5;
     int px = int(x + width/2);
     int py = int(y + height/2);
 

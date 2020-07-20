@@ -1,26 +1,54 @@
+class Hankerchief extends Variation {    
+  Hankerchief() {
+    super();
+    this.name = "Hankerchief";
+  }
+
+  PVector f(PVector v) {
+    if (abs(v.y) > 0) {
+      float r = v.magSq();
+      float theta = atan(v.x / v.y);
+      float x = r * sin(theta + r);
+      float y = r * cos(theta - r);
+      return new PVector(x, y);
+    } else {
+      return v.copy();
+    }
+  }
+}
+
 
 class HorseShoe extends Variation {    
-    HorseShoe() {
+  HorseShoe() {
     super();
+    this.name = "HorseShoe";
   }
 
   PVector f(PVector v) {
     float r = v.magSq();
     float x = (v.x-v.y) * (v.x+v.y);
     float y = 2 * v.x * v.y;
-    PVector newV = new PVector(x,y);
-    return newV;    
+    PVector newV = new PVector(x, y);
+    if (r > 0) {
+      newV.div(r);
+    }
+    return newV;
   }
 }
 
 class Spherical extends Variation {
   Spherical() {
     super();
+    this.name = "Spherical";
   }
 
   PVector f(PVector v) {
     float r = v.magSq();
-    return v.copy().div(r);
+    if (r > 0) {
+      return v.copy().div(r);
+    } else {
+      return v.copy();
+    }
   }
 }
 
@@ -28,6 +56,7 @@ class Spherical extends Variation {
 class Swirl extends Variation {
   Swirl() {
     super();
+    this.name = "Swirl";
   }
 
   PVector f(PVector v) {
@@ -40,6 +69,7 @@ class Swirl extends Variation {
 class Sinusoidal extends Variation {
   Sinusoidal() {
     super();
+    this.name = "Sinusoidal";
   }
 
   PVector f(PVector v) {
@@ -64,6 +94,7 @@ class Variation {
   float[] preTransform = new float[6];
   float[] postTransform = new float[6];
   float r, g, b;
+  String name;
 
   Variation setColor(float r, float g, float b) {
     this.r = r;
@@ -72,14 +103,13 @@ class Variation {
     return this;
   }
 
-
   Variation() {
-    this.preTransform =  new float[] {1,0,0,0,1,0};
-    this.postTransform = new float[] {1,0,0,0,1,0};
-    //for (int i = 0; i < 6; i++) {
-    //  this.preTransform[i] = random(-1, 1);
-    //  this.postTransform[i] = random(-1, 1);
-    //}
+    color c = randomColor();
+    this.setColor(red(c)/255,green(c)/255,blue(c)/255);
+    for (int i = 0; i < 6; i++) {
+      this.preTransform[i] = random(-1, 1);
+      this.postTransform[i] = random(-1, 1);
+    }
   }
 
   PVector affine(PVector v, float[] coeff) {
