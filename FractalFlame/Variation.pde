@@ -1,3 +1,80 @@
+class Diamond extends Variation {    
+  Diamond() {
+    super();
+    this.name = "Diamond";
+  }
+
+  PVector f(PVector v) {
+    float r = v.magSq();
+    float theta = atan(v.x / v.y);
+    float x =  sin(theta) * cos(r);
+    float y =  cos(theta) * sin(r);
+    return new PVector(x, y);
+  }
+}
+
+class Hyperbolic extends Variation {    
+  Hyperbolic() {
+    super();
+    this.name = "Hyperbolic";
+  }
+
+  PVector f(PVector v) {
+    float r = v.magSq();
+    float theta = atan(v.x / v.y);
+    float x =  sin(theta) / r;
+    float y =  r * cos(theta);
+    return new PVector(x, y);
+  }
+}
+
+class Spiral extends Variation {    
+  Spiral() {
+    super();
+    this.name = "Spiral";
+  }
+
+  PVector f(PVector v) {
+    float r = v.magSq();
+    float theta = atan(v.x / v.y);
+    float x =  (1/r) * (cos(theta) + sin(r));
+    float y =  (1/r) * (sin(theta) - cos(r));
+    return new PVector(x, y);
+  }
+}
+
+
+class Disc extends Variation {    
+  Disc() {
+    super();
+    this.name = "Disc";
+  }
+
+  PVector f(PVector v) {
+    float r = v.magSq();
+    float theta = atan(v.x / v.y);
+    float x =  (theta/PI) * sin(PI * r);
+    float y =  (theta/PI) * cos(PI * r);
+    return new PVector(x, y);
+  }
+}
+
+class Heart extends Variation {    
+  Heart() {
+    super();
+    this.name = "Heart";
+  }
+
+  PVector f(PVector v) {
+    float r = v.magSq();
+    float theta = atan(v.x / v.y);
+    float x =  r * sin(theta * r);
+    float y = -r * cos(theta * r);
+    return new PVector(x, y);
+  }
+}
+
+
 class Hankerchief extends Variation {    
   Hankerchief() {
     super();
@@ -5,15 +82,26 @@ class Hankerchief extends Variation {
   }
 
   PVector f(PVector v) {
-    if (abs(v.y) > 0) {
-      float r = v.magSq();
-      float theta = atan(v.x / v.y);
-      float x = r * sin(theta + r);
-      float y = r * cos(theta - r);
-      return new PVector(x, y);
-    } else {
-      return v.copy();
-    }
+    float r = v.magSq();
+    float theta = atan(v.x / v.y);
+    float x = r * sin(theta + r);
+    float y = r * cos(theta - r);
+    return new PVector(x, y);
+  }
+}
+
+class Polar extends Variation {    
+  Polar() {
+    super();
+    this.name = "Polar";
+  }
+
+  PVector f(PVector v) {
+    float r = v.magSq();
+    float theta = atan(v.x / v.y);
+    float x = theta / PI;
+    float y = r - 1;
+    return new PVector(x, y);
   }
 }
 
@@ -29,9 +117,7 @@ class HorseShoe extends Variation {
     float x = (v.x-v.y) * (v.x+v.y);
     float y = 2 * v.x * v.y;
     PVector newV = new PVector(x, y);
-    if (r > 0) {
-      newV.div(r);
-    }
+    newV.div(r);
     return newV;
   }
 }
@@ -44,11 +130,7 @@ class Spherical extends Variation {
 
   PVector f(PVector v) {
     float r = v.magSq();
-    if (r > 0) {
-      return v.copy().div(r);
-    } else {
-      return v.copy();
-    }
+    return v.copy().div(r);
   }
 }
 
@@ -105,7 +187,7 @@ class Variation {
 
   Variation() {
     color c = randomColor();
-    this.setColor(red(c)/255,green(c)/255,blue(c)/255);
+    this.setColor(red(c)/255, green(c)/255, blue(c)/255);
     for (int i = 0; i < 6; i++) {
       this.preTransform[i] = random(-1, 1);
       this.postTransform[i] = random(-1, 1);
@@ -123,7 +205,7 @@ class Variation {
   }
 
   PVector flame(PVector input) {
-    //return this.f(input);
+    // return this.f(input);
     PVector v = this.affine(input, this.preTransform);
     v = this.f(v);
     v = this.affine(v, this.postTransform);

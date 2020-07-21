@@ -5,22 +5,26 @@ ArrayList<Variation> variations = new ArrayList<Variation>();
 
 Pixel[][] pixies;
 
-int total = 50000000;
-int perFrame = 500000;
+int total = 100000000;
+int perFrame = 1000000;
 int count = 0;
 
 
 
 void setup() {
   size(800, 800);
-  //randomSeed(403);
   pixies = new Pixel[width][height];
   variations.add(new Linear(1));
   variations.add(new Sinusoidal());
   variations.add(new Swirl());
   variations.add(new Spherical());
   variations.add(new HorseShoe());
-  //variations.add(new Hankerchief().setColor(0.5, 0.7, 1));
+  variations.add(new Polar());
+  variations.add(new Hankerchief());
+  variations.add(new Heart());
+  variations.add(new Disc());
+  variations.add(new Hyperbolic());
+
   current = PVector.random2D();//.mult(random(1));
   for (int i = 0; i < width; i++) {
     for (int j = 0; j < height; j++) {
@@ -34,18 +38,25 @@ void draw() {
   //translate(width / 2, height / 2);
   //scale(1, -1);
   //strokeWeight(2);
+
   for (int i = 0; i < perFrame; i++) {
     int index = int(random(variations.size()));
     Variation variation = variations.get(index);
+    PVector previous = current.copy();
     current = variation.flame(current);
-    if (Float.isNaN(current.x) || Float.isNaN(current.y)) {
-      println(variation.name);
-      break;
+
+    // Probably need to switch everything to double
+    if (Float.isNaN(current.x) || Float.isNaN(current.y) || !Float.isFinite(current.x) || !Float.isFinite(current.y)) {
+      current = previous.copy();
     }
 
+    if (Float.isNaN(current.x) || Float.isNaN(current.y) || !Float.isFinite(current.x) || !Float.isFinite(current.y)) {
+      println("problem!");
+    }
+    
     // A final transformation to fit on window?
-    float x = current.x * width / 2 * 0.5;
-    float y = current.y * height / 2 * 0.5;
+    float x = current.x * width / 2 * 0.25;
+    float y = current.y * height / 2 * 0.25;
     int px = int(x + width/2);
     int py = int(y + height/2);
 
@@ -59,13 +70,13 @@ void draw() {
       pixies[px][py].b /= 2;
     }
   }
-  
+
   count += perFrame;
   //println(count);
-  
+
   float percent = float(count) / total;
   fill(255);
-  rect(0,50,percent * width,50);
+  rect(0, 50, percent * width, 50);
 
   if (count >= total) {
 
@@ -99,6 +110,7 @@ void draw() {
       }
     }
     updatePixels();
+    saveFrame("render"+millis()+".png");
     noLoop();
   }
 }
