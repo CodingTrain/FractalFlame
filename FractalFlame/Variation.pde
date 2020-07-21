@@ -1,3 +1,17 @@
+class Fisheye extends Variation {    
+  Fisheye() {
+    super();
+    this.name = "Fisheye";
+  }
+
+  PVector f(PVector v) {
+    float r = v.magSq();
+    PVector newV = new PVector(v.y, v.x);
+    newV.mult(2 / (r+1));
+    return newV;
+  }
+}
+
 class Diamond extends Variation {    
   Diamond() {
     super();
@@ -205,7 +219,7 @@ class Variation {
   }
 
   PVector flame(PVector input) {
-    // return this.f(input);
+    //return this.f(input);
     PVector v = this.affine(input, this.preTransform);
     v = this.f(v);
     v = this.affine(v, this.postTransform);

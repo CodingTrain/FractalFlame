@@ -5,11 +5,9 @@ ArrayList<Variation> variations = new ArrayList<Variation>();
 
 Pixel[][] pixies;
 
-int total = 100000000;
+int total = 200000000;
 int perFrame = 1000000;
 int count = 0;
-
-
 
 void setup() {
   size(800, 800);
@@ -24,6 +22,7 @@ void setup() {
   variations.add(new Heart());
   variations.add(new Disc());
   variations.add(new Hyperbolic());
+  variations.add(new Fisheye());
 
   current = PVector.random2D();//.mult(random(1));
   for (int i = 0; i < width; i++) {
@@ -55,8 +54,8 @@ void draw() {
     }
     
     // A final transformation to fit on window?
-    float x = current.x * width / 2 * 0.25;
-    float y = current.y * height / 2 * 0.25;
+    float x = current.x * width / 2 * 0.5;
+    float y = current.y * height / 2 * 0.5;
     int px = int(x + width/2);
     int py = int(y + height/2);
 
