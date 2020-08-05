@@ -1,3 +1,52 @@
+class Variation {
+  float[] preTransform = new float[6];
+  float[] postTransform = new float[6];
+  float colorVal;
+  String name;
+
+  Variation setColor(float val) {
+    colorVal = val;
+    return this;
+  }
+
+  Variation setTransform(float[] pre) {
+    this.preTransform = pre;
+    return this;
+  }
+
+  Variation() {
+    for (int i = 0; i < 6; i++) {
+      this.preTransform[i] = random(-1, 1);
+      this.postTransform[i] = random(-1, 1);
+    }
+  }
+
+  PVector affine(PVector v, float[] coeff) {
+    float x = coeff[0] * v.x + coeff[1] * v.y + coeff[2];
+    float y = coeff[3] * v.x + coeff[4] * v.y + coeff[5];
+    return new PVector(x, y);
+  }
+
+  PVector f(PVector v) {
+    return v.copy();
+  }
+
+  PVector flame(PVector input) {
+    // Pre transform
+    PVector v = this.affine(input, this.preTransform);
+
+    // Apply variation
+    v = this.f(v);
+
+    // Color averages
+    v.z = (input.z + colorVal) * 0.5;
+
+    // Skipping post transform for testing
+    // v = this.affine(v, this.postTransform);
+    return v;
+  }
+}
+
 class Fisheye extends Variation {    
   Fisheye() {
     super();
@@ -5,7 +54,7 @@ class Fisheye extends Variation {
   }
 
   PVector f(PVector v) {
-    float r = v.magSq();
+    float r = v.x * v.x + v.y * v.y;
     PVector newV = new PVector(v.y, v.x);
     newV.mult(2 / (r+1));
     return newV;
@@ -19,7 +68,7 @@ class Diamond extends Variation {
   }
 
   PVector f(PVector v) {
-    float r = v.magSq();
+    float r = v.x * v.x + v.y * v.y;
     float theta = atan(v.x / v.y);
     float x =  sin(theta) * cos(r);
     float y =  cos(theta) * sin(r);
@@ -34,7 +83,7 @@ class Hyperbolic extends Variation {
   }
 
   PVector f(PVector v) {
-    float r = v.magSq();
+    float r = v.x * v.x + v.y * v.y;
     float theta = atan(v.x / v.y);
     float x =  sin(theta) / r;
     float y =  r * cos(theta);
@@ -49,7 +98,7 @@ class Spiral extends Variation {
   }
 
   PVector f(PVector v) {
-    float r = v.magSq();
+    float r = v.x * v.x + v.y * v.y;
     float theta = atan(v.x / v.y);
     float x =  (1/r) * (cos(theta) + sin(r));
     float y =  (1/r) * (sin(theta) - cos(r));
@@ -65,7 +114,7 @@ class Disc extends Variation {
   }
 
   PVector f(PVector v) {
-    float r = v.magSq();
+    float r = v.x * v.x + v.y * v.y;
     float theta = atan(v.x / v.y);
     float x =  (theta/PI) * sin(PI * r);
     float y =  (theta/PI) * cos(PI * r);
@@ -80,7 +129,7 @@ class Heart extends Variation {
   }
 
   PVector f(PVector v) {
-    float r = v.magSq();
+    float r = v.x * v.x + v.y * v.y;
     float theta = atan(v.x / v.y);
     float x =  r * sin(theta * r);
     float y = -r * cos(theta * r);
@@ -96,7 +145,7 @@ class Hankerchief extends Variation {
   }
 
   PVector f(PVector v) {
-    float r = v.magSq();
+    float r = v.x * v.x + v.y * v.y;
     float theta = atan(v.x / v.y);
     float x = r * sin(theta + r);
     float y = r * cos(theta - r);
@@ -111,7 +160,7 @@ class Polar extends Variation {
   }
 
   PVector f(PVector v) {
-    float r = v.magSq();
+    float r = v.x * v.x + v.y * v.y;
     float theta = atan(v.x / v.y);
     float x = theta / PI;
     float y = r - 1;
@@ -127,12 +176,10 @@ class HorseShoe extends Variation {
   }
 
   PVector f(PVector v) {
-    float r = v.magSq();
-    float x = (v.x-v.y) * (v.x+v.y);
+    float r = v.x * v.x + v.y * v.y;
+    float x = (v.x - v.y) * (v.x + v.y);
     float y = 2 * v.x * v.y;
-    PVector newV = new PVector(x, y);
-    newV.div(r);
-    return newV;
+    return new PVector(x / r, y / r);
   }
 }
 
@@ -143,8 +190,8 @@ class Spherical extends Variation {
   }
 
   PVector f(PVector v) {
-    float r = v.magSq();
-    return v.copy().div(r);
+    float r = v.x*v.x + v.y*v.y;
+    return new PVector(v.x / r, v.y / r);
   }
 }
 
@@ -176,53 +223,13 @@ class Sinusoidal extends Variation {
 
 class Linear extends Variation {
   float amt;
+
   Linear(float amt) {
     super();
     this.amt = amt;
   }
 
   PVector f(PVector v) {
-    return v.copy().mult(amt);
-  }
-}
-
-class Variation {
-  float[] preTransform = new float[6];
-  float[] postTransform = new float[6];
-  float r, g, b;
-  String name;
-
-  Variation setColor(float r, float g, float b) {
-    this.r = r;
-    this.b = b;
-    this.g = g;    
-    return this;
-  }
-
-  Variation() {
-    color c = randomColor();
-    this.setColor(red(c)/255, green(c)/255, blue(c)/255);
-    for (int i = 0; i < 6; i++) {
-      this.preTransform[i] = random(-1, 1);
-      this.postTransform[i] = random(-1, 1);
-    }
-  }
-
-  PVector affine(PVector v, float[] coeff) {
-    float x = coeff[0] * v.x + coeff[1] * v.y + coeff[2];
-    float y = coeff[3] * v.x + coeff[4] * v.y + coeff[5];
-    return new PVector(x, y);
-  }
-
-  PVector f(PVector v) {
-    return v.copy();
-  }
-
-  PVector flame(PVector input) {
-    //return this.f(input);
-    PVector v = this.affine(input, this.preTransform);
-    v = this.f(v);
-    v = this.affine(v, this.postTransform);
-    return v;
+    return new PVector(v.x * amt, v.y * amt);
   }
 }
